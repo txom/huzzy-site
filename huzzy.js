@@ -30,3 +30,21 @@ if (document.querySelector('[data-set]')) {
   document.querySelectorAll('[data-set]').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.set)));
   setLang(initial);
 }
+
+// Rotador de preguntas de la portada. Cambia de tipo cada pocos segundos con un fundido.
+document.querySelectorAll('[data-rot]').forEach((box) => {
+  const items = JSON.parse(box.dataset.rot);
+  const tag = box.querySelector('.rtag'), q = box.querySelector('.rq');
+  let i = 0;
+  const show = () => {
+    const it = items[i % items.length];
+    box.classList.remove('in');
+    setTimeout(() => {
+      box.dataset.tone = it.tone; tag.textContent = it.tag; q.textContent = it.q;
+      box.classList.add('in');
+      i++;
+    }, 250);
+  };
+  show();
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(show, 3800);
+});
