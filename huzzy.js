@@ -1,5 +1,5 @@
 // La mascota y el cambio de idioma de las páginas. Sin dependencias.
-const INK = '#241B3D', PINK = '#FF6F91';
+const INK = '#2B2240', PINK = '#D95D7A';
 function fluff(cx, cy, r, n, h) {
   const p = [...Array(n)].map((_, i) => { const a = (i / n) * Math.PI * 2 - Math.PI / 2; return [cx + r * Math.cos(a), cy + r * Math.sin(a), a]; });
   let d = `M ${p[0][0]} ${p[0][1]}`;
@@ -17,14 +17,16 @@ function huzzy(color) {
 }
 document.querySelectorAll('[data-huzzy]').forEach((el) => (el.innerHTML = huzzy(el.dataset.huzzy)));
 
+if (document.querySelector('[data-set]')) {
 // Idioma. Se elige por el del navegador y se puede cambiar con los botones.
-const saved = localStorage.getItem('lang');
-const initial = saved || ((navigator.language || 'en').toLowerCase().startsWith('es') ? 'es' : 'en');
-function setLang(l) {
-  document.documentElement.lang = l;
-  document.querySelectorAll('[data-l]').forEach((el) => (el.hidden = el.dataset.l !== l));
-  document.querySelectorAll('[data-set]').forEach((b) => b.classList.toggle('on', b.dataset.set === l));
-  localStorage.setItem('lang', l);
+  const saved = localStorage.getItem('lang');
+  const initial = saved || ((navigator.language || 'en').toLowerCase().startsWith('es') ? 'es' : 'en');
+  function setLang(l) {
+    document.documentElement.lang = l;
+    document.querySelectorAll('[data-l]').forEach((el) => (el.hidden = el.dataset.l !== l));
+    document.querySelectorAll('[data-set]').forEach((b) => b.classList.toggle('on', b.dataset.set === l));
+    localStorage.setItem('lang', l);
+  }
+  document.querySelectorAll('[data-set]').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.set)));
+  setLang(initial);
 }
-document.querySelectorAll('[data-set]').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.set)));
-setLang(initial);
