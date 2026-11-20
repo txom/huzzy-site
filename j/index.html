@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Te han invitado a Huzzy</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Te invita a conoceros mejor con preguntas para dos. Entras con Google.">
+<meta property="og:title" content="Te han invitado a una partida en Huzzy"><meta property="og:description" content="Preguntas para conocer mejor a tu pareja. Abre el enlace y juega en segundos.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap">
+<style>
+:root{--ink:#2B2240;--soft:#7C7390;--sky:#F7E6E3;--pink:#D95D7A;--pinkd:#B8445F;--line:#EFDEDD;--blush:#FBE4DE}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--sky);font-family:'Nunito',system-ui,sans-serif;font-weight:600;color:var(--ink);display:grid;place-items:center;padding:24px}
+main{width:100%;max-width:460px;text-align:center}
+.pair{display:flex;justify-content:center;align-items:flex-end;margin-bottom:6px}.pair [data-huzzy]{width:150px}.pair [data-huzzy]+[data-huzzy]{margin-left:-22px}
+h1{font-weight:800;font-size:38px;line-height:1.05;margin:.2em 0 .1em;letter-spacing:-.5px}
+p{font-size:18px;line-height:1.4;margin:.4em 0}.soft{color:var(--soft)}
+.code{background:#fff;border:2px solid var(--line);border-bottom-width:4px;border-radius:26px;padding:16px;margin:20px 0}.code small{display:block;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--soft);font-size:12px}
+.code b{display:block;font-weight:800;font-size:40px;letter-spacing:6px;margin-top:4px}
+.btn{display:block;width:100%;font:inherit;font-weight:800;font-size:20px;text-decoration:none;text-align:center;border:0;border-bottom:4px solid var(--pinkd);background:var(--pink);color:#fff;border-radius:22px;padding:15px 24px;margin:10px 0;cursor:pointer}
+.btn.soft{background:var(--blush);color:var(--ink);border-bottom-color:#F0C9C0}
+.fine{font-size:14px;color:var(--soft)}
+[hidden]{display:none!important}
+</style></head><body><main>
+<div class="pair"><div data-huzzy="#FFC8B8"></div><div data-huzzy="#E7B9CD"></div></div>
+<h1 data-t="title">Te han invitado a jugar</h1>
+<p data-t="sub">Preguntas para conoceros mejor, solo para dos. Entras con Google o sin cuenta.</p>
+<div class="code" id="codeBox" hidden><small data-t="code">Tu código</small><b id="code"></b></div>
+<a class="btn" id="open" href="#" data-t="open">Abrir en la app</a>
+<a class="btn soft" id="store" href="https://play.google.com/apps/testing/com.gethuzzy.app" rel="noopener" data-t="store">Instalar en Google Play</a>
+<p class="fine" data-t="fine">Si ya tienes la app, ábrela y pega el código. Si no, instálala: al abrirla te lo pedirá. El código sirve una sola vez y caduca a los 7 días.</p>
+<p class="fine" id="bad" hidden data-t="bad">Este enlace no tiene código. Pídele a tu pareja que te lo mande otra vez.</p>
+</main>
+<script src="/huzzy.js"></script>
+<script>
+// Página a la que llegan las invitaciones (https://huzzy.app/j/?c=ABCD2345). Lanza la app, o enseña el código para pegarlo.
+const T={es:{title:'Te han invitado a jugar',sub:'Preguntas para conoceros mejor, solo para dos. Entras con Google o sin cuenta.',code:'Tu código',open:'Abrir en la app',store:'Instalar en Google Play',fine:'Si ya tienes la app, ábrela y pega el código. Si no, instálala: al abrirla te lo pedirá. El código sirve una sola vez y caduca a los 7 días.',bad:'Este enlace no tiene código. Pídele a tu pareja que te lo mande otra vez.'},
+en:{title:"You've been invited to play",sub:'Questions to get to know each other better, just for two. You sign in with Google or without an account.',code:'Your code',open:'Open in the app',store:'Get it on Google Play',fine:'Already have the app? Open it and paste the code. If not, install it: it will ask for the code. It works once and expires in 7 days.',bad:'This link has no code. Ask your partner to send it again.'}};
+const lang=/^es/i.test((navigator.languages||[])[0]||navigator.language||'es')?'es':'en';
+document.documentElement.lang=lang;document.querySelectorAll('[data-t]').forEach(e=>e.textContent=T[lang][e.dataset.t]);
+const raw=(new URLSearchParams(location.search).get('c')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8);
+const ok=/^[A-Z2-9]{8}$/.test(raw);
+const play='https://play.google.com/apps/testing/com.gethuzzy.app';
+if(!ok){document.getElementById('bad').hidden=false;document.getElementById('open').hidden=true}
+else{
+  document.getElementById('codeBox').hidden=false;document.getElementById('code').textContent=raw.slice(0,4)+' '+raw.slice(4);
+  // Copia el código: en la app, «Pegar código o enlace» lo recoge.
+  const copy=()=>{try{navigator.clipboard.writeText(raw)}catch(e){}};
+  const open=document.getElementById('open');
+  const android=/android/i.test(navigator.userAgent);
+  open.href=android?`intent://join/${raw}#Intent;scheme=huzzy;package=com.gethuzzy.app;S.browser_fallback_url=${encodeURIComponent(play)};end`:`huzzy://join/${raw}`;
+  open.addEventListener('click',copy);document.getElementById('store').addEventListener('click',copy);
+}
+</script></body></html>
