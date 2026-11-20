@@ -25,6 +25,7 @@ p{font-size:18px;line-height:1.4;margin:.4em 0}.soft{color:var(--soft)}
 <p data-t="sub">Preguntas para conoceros mejor, solo para dos. Entras con Google o sin cuenta.</p>
 <div class="code" id="codeBox" hidden><small data-t="code">Tu código</small><b id="code"></b></div>
 <a class="btn" id="open" href="#" data-t="open">Abrir en la app</a>
+<a class="btn" id="web" href="#" data-t="web" hidden>Jugar en el navegador</a>
 <a class="btn soft" id="store" href="https://play.google.com/apps/testing/com.gethuzzy.app" rel="noopener" data-t="store">Instalar en Google Play</a>
 <p class="fine" data-t="fine">Si ya tienes la app, ábrela y pega el código. Si no, instálala: al abrirla te lo pedirá. El código sirve una sola vez y caduca a los 7 días.</p>
 <p class="fine" id="bad" hidden data-t="bad">Este enlace no tiene código. Pídele a tu pareja que te lo mande otra vez.</p>
@@ -32,8 +33,8 @@ p{font-size:18px;line-height:1.4;margin:.4em 0}.soft{color:var(--soft)}
 <script src="/huzzy.js"></script>
 <script>
 // Página a la que llegan las invitaciones (https://huzzy.app/j/?c=ABCD2345). Lanza la app, o enseña el código para pegarlo.
-const T={es:{title:'Te han invitado a jugar',sub:'Preguntas para conoceros mejor, solo para dos. Entras con Google o sin cuenta.',code:'Tu código',open:'Abrir en la app',store:'Instalar en Google Play',fine:'Si ya tienes la app, ábrela y pega el código. Si no, instálala: al abrirla te lo pedirá. El código sirve una sola vez y caduca a los 7 días.',bad:'Este enlace no tiene código. Pídele a tu pareja que te lo mande otra vez.'},
-en:{title:"You've been invited to play",sub:'Questions to get to know each other better, just for two. You sign in with Google or without an account.',code:'Your code',open:'Open in the app',store:'Get it on Google Play',fine:'Already have the app? Open it and paste the code. If not, install it: it will ask for the code. It works once and expires in 7 days.',bad:'This link has no code. Ask your partner to send it again.'}};
+const T={es:{title:'Te han invitado a jugar',sub:'Preguntas para conoceros mejor, solo para dos. Entras con Google o sin cuenta.',code:'Tu código',open:'Abrir en la app',store:'Instalar en Google Play',web:'Jugar en el navegador',fine:'Si ya tienes la app, ábrela y pega el código. Si no, instálala: al abrirla te lo pedirá. El código sirve una sola vez y caduca a los 7 días.',bad:'Este enlace no tiene código. Pídele a tu pareja que te lo mande otra vez.'},
+en:{title:"You've been invited to play",sub:'Questions to get to know each other better, just for two. You sign in with Google or without an account.',code:'Your code',open:'Open in the app',store:'Get it on Google Play',web:'Play in your browser',fine:'Already have the app? Open it and paste the code. If not, install it: it will ask for the code. It works once and expires in 7 days.',bad:'This link has no code. Ask your partner to send it again.'}};
 const lang=/^es/i.test((navigator.languages||[])[0]||navigator.language||'es')?'es':'en';
 document.documentElement.lang=lang;document.querySelectorAll('[data-t]').forEach(e=>e.textContent=T[lang][e.dataset.t]);
 const raw=(new URLSearchParams(location.search).get('c')||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8);
@@ -48,5 +49,8 @@ else{
   const android=/android/i.test(navigator.userAgent);
   open.href=android?`intent://join/${raw}#Intent;scheme=huzzy;package=com.gethuzzy.app;S.browser_fallback_url=${encodeURIComponent(play)};end`:`huzzy://join/${raw}`;
   open.addEventListener('click',copy);document.getElementById('store').addEventListener('click',copy);
+  // También se puede jugar en el navegador (iPhone y ordenador): el enlace lleva el código puesto.
+  const web=document.getElementById('web');web.hidden=false;web.href='/app/?c='+raw;
+  if(!android){open.hidden=true;document.getElementById('store').hidden=true;web.className='btn';}else{web.className='btn soft';}
 }
 </script></body></html>
